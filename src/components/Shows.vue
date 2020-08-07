@@ -10,11 +10,12 @@
             <th>Seasons</th>
             <th>Is Current</th>
             <th>Genres</th>
+            <th></th>
           </thead>
           <tbody>
             <tr v-for="show in showsInOrder" :key="show.id">
               <td>
-                <router-link :to="{ path: `/details/${show.id}`}">
+                <router-link :to="{ path: `/details/${show.id}`}" class="teal-text text-accent-4 title">
                   {{ show.title }}
                 </router-link>
               </td>
@@ -25,6 +26,16 @@
                 <i class="material-icons" v-if="!show.isCurrent">close</i>
               </td>
               <td>{{ show.genres.join(' / ') }}</td>
+              <td>
+                <router-link :to="{ path: `/edit/${show.id}`}">
+                  <i class="material-icons blue-grey-text text-darken-2">edit</i>
+                </router-link>
+              </td>
+              <td>
+                <a href="" @click="Delete(show.id)">
+                  <i class="material-icons blue-grey-text text-darken-2">delete</i>
+                </a>
+              </td>
             </tr>
           </tbody>
         </table>
@@ -49,7 +60,7 @@
               <input id="genres" type="text" class="validate" required v-model="genres">
               <label for="genres">Genres</label>
               <div class="row">
-                <label for="genres" class="example">Example: "Action, Drama, Sci-Fi"</label>
+                <label for="genres" class="example">Example: "Action,Drama,Sci-Fi"</label>
               </div>
             </div>
             <div class="input-field col m4">
@@ -80,7 +91,9 @@
 </template>
 
 <script>
-import { db } from '@/firebase'; 
+import { db } from '@/firebase';
+import M from 'materialize-css';
+
 export default {
   name: 'Shows',
   data() {
@@ -100,14 +113,20 @@ export default {
         network: this.network,
         numberOfSeasons: parseInt(this.numberOfSeasons),
         isCurrent: this.isCurrent,
-        genres: this.genres.split(', ', 5)
+        genres: this.genres.split(',', 5)
       })
       this.title = '';
       this.network = '';
       this.numberOfSeasons = '';
       this.isCurrent = null;
       this.genres = [];
-    }
+    },
+    Delete(id) {
+      if (window.confirm("Are you sure you want to delete this show?")) { 
+        db.collection('shows').doc(id).delete();
+        M.toast({html: 'Show deleted!', classes: 'rounded'})
+      }
+    },
   },
   firestore() {
     return {
@@ -120,12 +139,15 @@ export default {
       shows.sort((a,b) => a.title.localeCompare(b.title));
       return shows;
     }
-  }
+  },
 }
 </script>
 
 <style scoped>
 @import url("https://fonts.googleapis.com/icon?family=Material+Icons");
+.title {
+  font-weight: bold;
+}
 form {
   padding: 1rem 2rem;
 }

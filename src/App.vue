@@ -19,4 +19,9 @@ export default {
   /* text-align: center; */
   color: #2c3e50;
 }
+.toast {
+  position: fixed;
+  top: 0 !important;
+  right: 20px !important;
+}
 </style>
