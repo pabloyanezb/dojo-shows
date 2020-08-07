@@ -1,17 +1,13 @@
 <template>
   <div id="app">
-    <Shows/>
+    <router-view/>
   </div>
 </template>
 
 <script>
-import Shows from './components/Shows.vue'
-
+// import Shows from './components/Shows.vue'
 export default {
   name: 'App',
-  components: {
-    Shows
-  },
 }
 </script>
 
@@ -22,6 +18,5 @@ export default {
   -moz-osx-font-smoothing: grayscale;
   /* text-align: center; */
   color: #2c3e50;
-  margin-top: 2rem;
 }
 </style>

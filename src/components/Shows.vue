@@ -13,7 +13,11 @@
           </thead>
           <tbody>
             <tr v-for="show in showsInOrder" :key="show.id">
-              <td>{{ show.title }}</td>
+              <td>
+                <router-link :to="{ path: `/details/${show.id}`}">
+                  {{ show.title }}
+                </router-link>
+              </td>
               <td>{{ show.network }}</td>
               <td class="center-align">{{ show.numberOfSeasons }}</td>
               <td class="center-align">
@@ -44,6 +48,9 @@
             <div class="input-field col m8">
               <input id="genres" type="text" class="validate" required v-model="genres">
               <label for="genres">Genres</label>
+              <div class="row">
+                <label for="genres" class="example">Example: "Action, Drama, Sci-Fi"</label>
+              </div>
             </div>
             <div class="input-field col m4">
               <input id="numberOfSeasons" type="number" class="validate" required v-model="numberOfSeasons">
@@ -51,7 +58,7 @@
             </div>
           </div>
           <div class="row">
-            <div class="col m8 offset-m1">
+            <div class="col m8 offset-m1 grey-text text-lighten-1">
               Is Current:
               <label>
                 <input name="isCurrent" type="radio" required checked v-model="isCurrent" :value="true"/>
@@ -117,7 +124,6 @@ export default {
 }
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 @import url("https://fonts.googleapis.com/icon?family=Material+Icons");
 form {
@@ -125,6 +131,11 @@ form {
 }
 input {
   color: white;
+}
+.example {
+  font-size: 9pt;
+  float: right;
+  margin-right: 10px;
 }
 .btn {
   width: 100%;
