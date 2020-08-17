@@ -1,9 +1,9 @@
 <template>
-  <div class="container">
-    <div class="row">
-      <div class="col s12 m12">
-        <h3>All Shows:</h3>
-        <table class="striped card blue-grey lighten-4">
+  <v-container>
+    <v-row>
+      <v-col col sm="12" lg="12">
+        <h1>All Shows:</h1>
+        <v-simple-table class="pt-2 blue-grey darken-4" dark>
           <thead>
             <th>Title</th>
             <th>Network</th>
@@ -13,159 +13,204 @@
             <th></th>
           </thead>
           <tbody>
-            <tr v-for="show in showsInOrder" :key="show.id">
+            <tr v-for="show in shows" :key="show.id">
               <td>
-                <router-link :to="{ path: `/details/${show.id}`}" class="teal-text text-accent-4 title">
+                <router-link
+                  :to="{ path: `/details/${show.id}` }"
+                  class="teal--text text--accent-1 title"
+                >
                   {{ show.title }}
                 </router-link>
               </td>
               <td>{{ show.network }}</td>
-              <td class="center-align">{{ show.numberOfSeasons }}</td>
-              <td class="center-align">
-                <i class="material-icons" v-if="show.isCurrent">check</i>
-                <i class="material-icons" v-if="!show.isCurrent">close</i>
+              <td class="text-center">{{ show.numberOfSeasons }}</td>
+              <td class="text-center">
+                <v-icon v-if="show.isCurrent">mdi-check</v-icon>
+                <v-icon v-if="!show.isCurrent">mdi-close</v-icon>
               </td>
-              <td>{{ show.genres.join(' / ') }}</td>
+              <td>{{ show.genres.join(" / ") }}</td>
               <td>
-                <router-link :to="{ path: `/edit/${show.id}`}">
-                  <i class="material-icons blue-grey-text text-darken-2">edit</i>
-                </router-link>
+                <v-tooltip top>
+                  <template v-slot:activator="{ on, attrs }">
+                    <router-link
+                      
+                      :to="{ path: `/edit/${show.id}` }"
+                    >
+                      <v-icon class="teal--text text--accent-3"
+                      v-on="on"
+                      v-bind="attrs"
+                        >mdi-pencil</v-icon
+                      >
+                    </router-link>
+                  </template>
+                  <span>Edit</span>
+                </v-tooltip>
               </td>
               <td>
-                <a href="" @click="Delete(show.id)">
-                  <i class="material-icons blue-grey-text text-darken-2">delete</i>
-                </a>
+                <v-tooltip top>
+                  <template v-slot:activator="{ on, attrs }">
+                    <a
+                      href=""
+                      v-on="on"
+                      v-bind="attrs"
+                      @click.prevent="(dialog = true), (id = show.id)"
+                    >
+                      <v-icon class="teal--text text--accent-4"
+                        >mdi-delete</v-icon
+                      >
+                    </a>
+                  </template>
+                  <span>Delete</span>
+                </v-tooltip>
               </td>
             </tr>
           </tbody>
-        </table>
-      </div>
-    </div>
-    <div class="row">
-      <div class="col s12 m12">
-        <h4>Add a Show</h4>
-        <form class="card blue-grey darken-4 white-text" @submit.prevent="addShow">
-          <div class="row">
-            <div class="input-field col m8">
-              <input id="title" type="text" class="validate" required v-model="title">
-              <label for="title">Title</label>
-            </div>
-            <div class="input-field col m4">
-              <input id="network" type="text" class="validate" required v-model="network">
-              <label for="network">Network</label>
-            </div>
-          </div>
-          <div class="row">
-            <div class="input-field col m8">
-              <input id="genres" type="text" class="validate" required v-model="genres">
-              <label for="genres">Genres</label>
-              <div class="row">
-                <label for="genres" class="example">Example: "Action,Drama,Sci-Fi"</label>
-              </div>
-            </div>
-            <div class="input-field col m4">
-              <input id="numberOfSeasons" type="number" class="validate" required v-model="numberOfSeasons">
-              <label for="numberOfSeasons">Number of Seasons</label>
-            </div>
-          </div>
-          <div class="row">
-            <div class="col m8 offset-m1 grey-text text-lighten-1">
-              Is Current:
-              <label>
-                <input name="isCurrent" type="radio" required checked v-model="isCurrent" :value="true"/>
-                <span>Yes</span>
-              </label>
-              <label>
-                <input name="isCurrent" type="radio" required v-model="isCurrent" :value="false"/>
-                <span>No</span>
-              </label>
-            </div>
-            <div class="col m3">
-              <button type="submit" class="waves-effect waves-light btn white-text">Add</button>
-            </div>
-          </div>
-        </form>
-      </div>
-    </div>
-  </div>
+        </v-simple-table>
+      </v-col>
+      <v-snackbar v-model="snackbar" :timeout="timeout" top>
+        Show deleted!
+        <template v-slot:action="{ attrs }">
+          <v-btn icon v-bind="attrs" @click="snackbar = false">
+            <v-icon>mdi-close</v-icon>
+          </v-btn>
+        </template>
+      </v-snackbar>
+    </v-row>
+    <v-row>
+      <v-col col sm="12" lg="12">
+        <h2>Add a Show</h2>
+        <v-card>
+          <v-form
+            class="card blue-grey darken-4 white-text px-8"
+            @submit.prevent="addShow"
+          >
+            <v-row>
+              <v-col col md="8">
+                <v-text-field
+                  required
+                  v-model="title"
+                  label="Title"
+                  dark
+                ></v-text-field>
+              </v-col>
+              <v-col col md="4">
+                <v-text-field
+                  required
+                  v-model="network"
+                  label="Network"
+                  dark
+                ></v-text-field>
+              </v-col>
+            </v-row>
+            <v-row>
+              <v-col col md="8">
+                <v-text-field
+                  required
+                  v-model="genres"
+                  label="Genres"
+                  hint="Example: 'Action,Drama,Sci-Fi'"
+                  dark
+                ></v-text-field>
+              </v-col>
+              <v-col col md="4">
+                <v-text-field
+                  type="number"
+                  required
+                  v-model="numberOfSeasons"
+                  dark
+                  label="Number of Seasons"
+                ></v-text-field>
+              </v-col>
+            </v-row>
+            <v-row align="center">
+              <v-col col sm="4" offset-sm="1" class="py-0">
+                <v-radio-group v-model="isCurrent" required dark row
+                  >Is Current: <v-spacer></v-spacer>
+                  <v-radio label="yes" :value="true"></v-radio>
+                  <v-radio label="no" :value="false"></v-radio>
+                </v-radio-group>
+              </v-col>
+              <v-col col sm="3" offset-sm="4" class="py-0">
+                <v-btn type="submit" block large>Add </v-btn>
+              </v-col>
+            </v-row>
+          </v-form>
+        </v-card>
+      </v-col>
+    </v-row>
+    <v-row justify="center">
+      <v-dialog v-model="dialog" persistent max-width="290">
+        <v-card>
+          <v-card-title class="headline">Are you sure?</v-card-title>
+          <v-card-text>The show will be deleted</v-card-text>
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn color="teal darken-1" text @click="dialog = false">No</v-btn>
+            <v-btn color="teal darken-1" text @click="Delete">Yes</v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+    </v-row>
+  </v-container>
 </template>
 
 <script>
-import { db } from '@/firebase';
-import M from 'materialize-css';
+import { db } from "@/firebase";
+// import M from 'materialize-css';
 
 export default {
-  name: 'Shows',
+  name: "Shows",
   data() {
     return {
       shows: [],
-      title: '',
-      network: '',
-      numberOfSeasons: '',
+      title: "",
+      network: "",
+      numberOfSeasons: "",
       isCurrent: null,
-      genres: []
-    }
+      genres: [],
+      snackbar: false,
+      timeout: 2000,
+      dialog: false,
+      id: null,
+    };
   },
   methods: {
     addShow() {
-      db.collection('shows').add({
+      db.collection("shows").add({
         title: this.title,
         network: this.network,
         numberOfSeasons: parseInt(this.numberOfSeasons),
         isCurrent: this.isCurrent,
-        genres: this.genres.split(',', 5)
-      })
-      this.title = '';
-      this.network = '';
-      this.numberOfSeasons = '';
+        genres: this.genres.split(",", 5),
+      });
+      this.title = "";
+      this.network = "";
+      this.numberOfSeasons = "";
       this.isCurrent = null;
       this.genres = [];
     },
-    Delete(id) {
-      if (window.confirm("Are you sure you want to delete this show?")) { 
-        db.collection('shows').doc(id).delete();
-        M.toast({html: 'Show deleted!', classes: 'rounded'})
-      }
+    Delete() {
+      db.collection("shows")
+        .doc(this.id)
+        .delete();
+      this.dialog = false;
+      this.snackbar = true;
+      this.id = null;
     },
   },
   firestore() {
     return {
-      shows: db.collection('shows')
-    }
+      shows: db.collection("shows").orderBy("title", "asc"),
+    };
   },
-  computed: {
-    showsInOrder() {
-      let shows = this.shows;
-      shows.sort((a,b) => a.title.localeCompare(b.title));
-      return shows;
-    }
-  },
-}
+};
 </script>
 
-<style scoped>
-@import url("https://fonts.googleapis.com/icon?family=Material+Icons");
-.title {
-  font-weight: bold;
+<style>
+a {
+  text-decoration: none;
 }
-form {
-  padding: 1rem 2rem;
-}
-input {
-  color: white;
-}
-.example {
-  font-size: 9pt;
-  float: right;
-  margin-right: 10px;
-}
-.btn {
-  width: 100%;
-}
-form .row {
-  margin-bottom: 0;
-}
-span {
-  margin-left: 1rem;
+.v-application--wrap {
+  background-color: #ECEFF1;
 }
 </style>

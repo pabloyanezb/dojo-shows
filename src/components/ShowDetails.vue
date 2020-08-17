@@ -1,42 +1,57 @@
 <template>
-  <div class="background blue-grey darken-4">
-    <div class="row container white-text">
-      <div class="col m7">
-        <h3>{{show.title}}</h3>
-        <table class="blue-grey-text text-lighten-4">
-          <tbody>
-            <tr>
-              <th>Network:</th>
-              <td>{{show.network}}</td>
-            </tr>
-            <tr>
-              <th>Is Current:</th>
-              <td>
-                <i class="material-icons" v-if="show.isCurrent">check</i>
-                <i class="material-icons" v-if="!show.isCurrent">close</i>
-              </td>
-            </tr>
-            <tr>
-              <th>Number of Seasons:</th>
-              <td>{{show.numberOfSeasons}}</td>
-            </tr>
-            <tr>
-              <th class="genres">Genres:</th>
-              <td>
-                <ul>
-                  <li v-for="(genre, i) in show.genres" :key="i">{{genre}}</li>
-                </ul>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-        <router-link :to="{ path: '/' }" class="waves-effect waves-light btn white-text">Back</router-link>
-      </div>
-      <div class="col m5 center">
-        <img :src="show.image" class="card">
-      </div>
-    </div>
-  </div>
+  <v-container>
+    <v-card color="blue-grey darken-4 mt-10" dark>
+      <router-link :to="{ path: '/' }" class="float-right ma-3">
+        <v-tooltip bottom>
+          <template v-slot:activator="{ on, attrs }">
+              <v-icon
+              v-on="on"
+              v-bind="attrs"
+              >mdi-undo
+              </v-icon>
+          </template>
+          <span>Return</span>
+        </v-tooltip>
+      </router-link>
+      <v-container>
+        <h1>{{show.title}}</h1>
+        <v-row>
+          <v-col col md="7" sm="12" class='text-center'>
+            <v-simple-table>
+              <tbody>
+                <tr>
+                  <th>Network:</th>
+                  <td>{{show.network}}</td>
+                </tr>
+                <tr>
+                  <th>Is Current:</th>
+                  <td>
+                    <v-icon v-if="show.isCurrent">mdi-check</v-icon>
+                    <v-icon v-if="!show.isCurrent">mdi-close</v-icon>
+                  </td>
+                </tr>
+                <tr>
+                  <th>Number of Seasons:</th>
+                  <td>{{show.numberOfSeasons}}</td>
+                </tr>
+                <tr>
+                  <th class="genres">Genres:</th>
+                  <td>
+                    <ul class="px-0">
+                      <li v-for="(genre, i) in show.genres" :key="i">{{genre}}</li>
+                    </ul>
+                  </td>
+                </tr>
+              </tbody>
+            </v-simple-table>
+          </v-col>
+          <v-col col md="5" sm="12" class="text-center">
+            <img :src="show.image">
+          </v-col>
+        </v-row>
+      </v-container>
+    </v-card>
+  </v-container>
 </template>
 
 <script>
@@ -59,26 +74,17 @@ export default {
 </script>
 
 <style scoped>
-@import url("https://fonts.googleapis.com/icon?family=Material+Icons");
-.background {
-  width: 100%;
-  height: 100vh;
-}
 .genres {
   vertical-align: top;
 }
-table {
-  font-size: 13pt;
-}
-ul {
-  margin: 0;
-}
-.btn {
-  margin-top: 1rem;
+.col-sm-12>img {
+  width: 310px;
 }
 img {
-  margin-top: 5rem;
   width: 341px;
   height: 192px;
+}
+ul {
+  list-style: none;
 }
 </style>
